@@ -1,0 +1,157 @@
+/**
+@mainpage The library for the AberLED shield.
+Please see the AberLEDClass for more details.
+
+\section intro Introduction
+This library allows the use of the AberLED shield which consists of
+an 8x8 bicolor display and five buttons and lets you write simple games.
+The name "AberLED" is a historical accident - until very recently it
+used a bicolor LED display. The library still allows this style of shield
+to be used, however.
+
+The library should come as a zip file, which you should import into
+your Arduino IDE using the library import tool (Sketch menu/Import Library../
+Add Library..). Once imported it can be added to projects.
+
+Including the AberLED.h file will create an object called `AberLED` 
+of the class AberLEDClass. To use it, all the function names described
+under AberLEDClass should be prefixed with `AberLED.` 
+
+\warning
+<b>If you have a shield with an array of LEDs in a white box 
+(and LED matrix) instead of a little black screen 
+(a TFT display), you will need use <code>AberLED.begin(AF_LEDDISPLAY)</code>
+in your setup() function!</b>
+
+Here's a minimal example:
+\code{.cpp}
+#include <AberLED.h>
+
+void setup(){
+    AberLED.begin();  // or AberLED.begin(true) for a TFT display
+    Serial.begin(9600);
+}   
+
+bool b[]={false,false,false,false,false};
+
+void loop(){
+    AberLED.clear();
+    delay(1);
+    for(int i=0;i<5;i++){
+        if(AberLED.getButton(i+1))
+            b[i] = !b[i];
+    }
+    for(int i=0;i<5;i++){
+        if(b[i])
+            AberLED.set(i,1,RED);
+        AberLED.set(i,2,GREEN);
+    }
+    AberLED.set(0,0,YELLOW);
+    
+    AberLED.swap();
+    Serial.println(AberLED.getTicks());
+}       
+
+\endcode
+
+\section coldefs Dealing with colour vision deficiencies
+
+If you have problems with colour vision you may find it difficult
+to differentiate some of the display colours.
+If you are using a TFT display board, you can set a custom colour map
+by passing an argument to **AberLED.begin**.
+
+\code{.cpp}
+static uint8_t cols[] = {
+  // each row is the actual red, green, blue pixel values
+  // for a each colour (BLACK, RED, GREEN, YELLOW)
+  
+  30,30,30,         // BLACK will now be dark grey
+  128,128,128,      // GREEN will now be mid grey
+  255,128,0,        // RED will now be orange
+  128,128,255,      // YELLOW will now be pale blue
+};
+
+void setup() {
+  // tell the library we are using a TFT display with the
+  // colour definitions above
+  AberLED.begin(AF_TFTDISPLAY, cols);
+}
+\endcode
+
+
+<!--
+\section old Old boards
+If you have an old beige board, add
+\code{.cpp}
+AberLED.setRevision(REV00);
+\endcode
+to your setup, immediately after AberLED.begin().
+
+-->
+
+\section copy Copyright and Licensing
+
+\code{unparsed}
+The majority of the code driving the TFT display is based on
+https://github.com/Bodmer/TFT_ST7735 
+which currently has no license details, but is based on the Adafruit GFX
+library - see below.
+
+The remainder is 
+Copyright 2014-2023 Jim Finnis, Aberystwyth University.
+
+This code is released under the terms of the MIT License:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+Adafruit_GFX ORIGINAL LIBRARY LICENSE:
+
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvStartvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+Software License Agreement (BSD License)
+
+Copyright (c) 2012 Adafruit Industries.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+- Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^End^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\endcode
+*/
